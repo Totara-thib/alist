@@ -7,12 +7,18 @@ on:
 # Re-publishing the same tag recreates the release (new id), which would leave
 # any in-flight run pointing at a deleted release id and fail with 404. Cancel
 # the stale run so only the newest publish for a given tag proceeds.
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.release.tag_name }}
   cancel-in-progress: true
 
 jobs:
   release:
+    permissions:
+      # Uploads the build to the release with the job token.
+      contents: write
     strategy:
       matrix:
         platform: [ ubuntu-latest ]
